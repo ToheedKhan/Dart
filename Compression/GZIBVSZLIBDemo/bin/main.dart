@@ -1,0 +1,40 @@
+import 'dart:convert';
+import 'dart:io';
+
+void main(List<String> arguments) {
+  int zlib = testCompress(ZLIB);
+  int gzip = testCompress(GZIP);
+
+  print('zlib = ${zlib}'); //Slow
+  print('gzip = ${gzip}');
+}
+
+
+String generateData() {
+ String data = '';
+ for (int i = 0; i < 1000; i++) {
+   data = data + 'Hellow World\r\n';
+ }
+ return data;
+}
+
+int testCompress(var codec) {
+  String data = generateData();
+  List original = utf8.encode(data);
+  List compressed = codec.encode(original);
+  List decompressed = codec.decode(compressed);
+
+  print('Data ${data.length}');
+
+  print('Testing ${codec.toString()}');
+  print('Original ${original.length}');
+  print('Copmpressed ${compressed.length}');
+  print('Decompressed ${decompressed.length}');
+
+  print('');
+
+  String decoded = utf8.decode(decompressed);
+  assert(data == decoded);
+
+  return compressed.length;
+}
